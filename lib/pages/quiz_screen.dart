@@ -191,6 +191,19 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget answerButton(Answer answer) {
+    Color buttonColor;
+
+    // Her cevap için farklı bir renk belirle
+    if (answer == questionList[currentQuestionIndex].answers[0]) {
+      buttonColor = const Color(0xffF03986);
+    } else if (answer == questionList[currentQuestionIndex].answers[1]) {
+      buttonColor = const Color(0xFF43DD65);
+    } else if (answer == questionList[currentQuestionIndex].answers[2]) {
+      buttonColor = const Color(0xffF2CA3C);
+    } else {
+      buttonColor = const Color(0xff3C9BF2);
+    }
+
     bool isSelected = answer == selectedAnswer;
 
     return SizedBox(
@@ -198,17 +211,21 @@ class _QuizScreenState extends State<QuizScreen> {
       width: ScreenUtil.getWidth(context) * 0.8,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-          backgroundColor: isSelected ? const Color(0xffF03986) : Colors.white,
+          elevation: isSelected ? 0 : 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          fixedSize: Size(
+            ScreenUtil.getWidth(context) * 0.7,
+            ScreenUtil.getHeight(context) * 0.08,
+          ),
+          backgroundColor:
+              isSelected ? buttonColor.withOpacity(0.6) : buttonColor,
         ),
         onPressed: () {
-          if (selectedAnswer == null) {
-            setState(
-              () {
-                selectedAnswer = answer;
-              },
-            );
-          }
+          setState(() {
+            selectedAnswer = answer;
+          });
         },
         child: Text(
           answer.answer,
