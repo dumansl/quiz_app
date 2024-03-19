@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:quiz_app/constant/screen_util.dart';
 import 'package:quiz_app/data/question_data.dart';
 import 'package:quiz_app/models/question.dart';
+import 'package:quiz_app/pages/result_screen.dart';
+import 'package:quiz_app/widgets/widgets.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -14,17 +15,18 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   List<Question> questionList = questions;
   int currentQuestionIndex = 0;
-  Answer? selectedAnswer;
+  List<Answer?> selectedAnswers = [];
   int score = 0;
 
   @override
   void initState() {
-    score;
     super.initState();
+    selectedAnswers = List<Answer?>.filled(questionList.length, null);
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isLastQuestion = currentQuestionIndex == questionList.length - 1;
     return Scaffold(
       backgroundColor: const Color(0xffFFF9E4),
       body: Padding(
@@ -33,7 +35,7 @@ class _QuizScreenState extends State<QuizScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              flex: 15,
+              flex: 10,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,7 +69,7 @@ class _QuizScreenState extends State<QuizScreen> {
               ),
             ),
             Expanded(
-              flex: 30,
+              flex: 25,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -80,30 +82,59 @@ class _QuizScreenState extends State<QuizScreen> {
                     style: GoogleFonts.roboto(
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
-                      fontSize: 24,
+                      fontSize: 20,
                     ),
                   ),
                 ],
               ),
             ),
             Expanded(
-              flex: 35,
+              flex: 50,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: questionList[currentQuestionIndex]
                     .answers
                     .map(
-                      (e) => answerButton(e),
+                      (e) => AnswerButton(
+                        answer: e,
+                        isSelected: e == selectedAnswers[currentQuestionIndex],
+                        onPressed: (answer) {
+                          setState(() {
+                            selectedAnswers[currentQuestionIndex] = answer;
+                          });
+                        },
+                      ),
                     )
                     .toList(),
               ),
             ),
             Expanded(
-              flex: 15,
+              flex: 10,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  nextButton(),
+                  NextButton(
+                    isLastQuestion: isLastQuestion,
+                    onPressed: () {
+                      if (selectedAnswers[currentQuestionIndex] != null) {
+                        setState(() {
+                          if (selectedAnswers[currentQuestionIndex]!
+                              .isCorrect) {
+                            score += 10;
+                          }
+                          if (!isLastQuestion) {
+                            currentQuestionIndex++;
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ResultScreen(),
+                                ));
+                          }
+                        });
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -113,129 +144,37 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
 
-  Widget showScoreDialog() {
-    return AlertDialog(
-      title: const Text(""),
-      content: Text(
-        'Puanınız $score',
-        style: GoogleFonts.roboto(
-          fontWeight: FontWeight.w400,
-          color: Colors.black,
-          fontSize: 18,
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-            setState(() {
-              currentQuestionIndex = 0;
-              score = 0;
-              selectedAnswer = null;
-            });
-          },
-          child: Text(
-            'Close',
-            style: GoogleFonts.roboto(
-              fontWeight: FontWeight.w400,
-              color: Colors.black,
-              fontSize: 18,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget nextButton() {
-    bool isLastQuestion = currentQuestionIndex == questionList.length - 1;
-
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        backgroundColor: const Color(0xffFF3737),
-        elevation: 0,
-        fixedSize: Size(
-          ScreenUtil.getWidth(context) * 0.7,
-          ScreenUtil.getHeight(context) * 0.08,
-        ),
-      ),
-      onPressed: () {
-        if (selectedAnswer != null) {
-          setState(
-            () {
-              if (selectedAnswer!.isCorrect) {
-                score = score + 10;
-              }
-              selectedAnswer = null;
-              if (!isLastQuestion) {
-                currentQuestionIndex++;
-              } else {
-                showDialog(context: context, builder: (_) => showScoreDialog());
-              }
-            },
-          );
-        }
-      },
-      child: Text(
-        isLastQuestion ? "GÖNDER" : "İLERİ",
-        style: GoogleFonts.roboto(
-          fontWeight: FontWeight.w500,
-          color: Colors.black,
-          fontSize: 18,
-        ),
-      ),
-    );
-  }
-
-  Widget answerButton(Answer answer) {
-    Color buttonColor;
-
-    // Her cevap için farklı bir renk belirle
-    if (answer == questionList[currentQuestionIndex].answers[0]) {
-      buttonColor = const Color(0xffF03986);
-    } else if (answer == questionList[currentQuestionIndex].answers[1]) {
-      buttonColor = const Color(0xFF43DD65);
-    } else if (answer == questionList[currentQuestionIndex].answers[2]) {
-      buttonColor = const Color(0xffF2CA3C);
-    } else {
-      buttonColor = const Color(0xff3C9BF2);
-    }
-
-    bool isSelected = answer == selectedAnswer;
-
-    return SizedBox(
-      height: ScreenUtil.getHeight(context) * 0.08,
-      width: ScreenUtil.getWidth(context) * 0.8,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          elevation: isSelected ? 0 : 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          fixedSize: Size(
-            ScreenUtil.getWidth(context) * 0.7,
-            ScreenUtil.getHeight(context) * 0.08,
-          ),
-          backgroundColor:
-              isSelected ? buttonColor.withOpacity(0.6) : buttonColor,
-        ),
-        onPressed: () {
-          setState(() {
-            selectedAnswer = answer;
-          });
-        },
-        child: Text(
-          answer.answer,
-          style: GoogleFonts.roboto(
-            fontWeight: FontWeight.w500,
-            fontSize: 20,
-            color: Colors.black,
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget showScoreDialog() {
+  //   return AlertDialog(
+  //     title: const Text(""),
+  //     content: Text(
+  //       'Puanınız $score',
+  //       style: GoogleFonts.roboto(
+  //         fontWeight: FontWeight.w400,
+  //         color: Colors.black,
+  //         fontSize: 18,
+  //       ),
+  //     ),
+  //     actions: [
+  //       TextButton(
+  //         onPressed: () {
+  //           Navigator.pop(context);
+  //           setState(() {
+  //             currentQuestionIndex = 0;
+  //             score = 0;
+  //             selectedAnswers = List<Answer?>.filled(questionList.length, null);
+  //           });
+  //         },
+  //         child: Text(
+  //           'Close',
+  //           style: GoogleFonts.roboto(
+  //             fontWeight: FontWeight.w400,
+  //             color: Colors.black,
+  //             fontSize: 18,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 }

@@ -16,4 +16,9 @@ class Answer {
     required this.answer,
     required this.isCorrect,
   });
+
+  @override
+  String toString() {
+    return answer;
+  }
 }

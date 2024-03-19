@@ -9,6 +9,7 @@ List<Question> questions = [
       Answer(answer: "B) Mobil Web (Mobile Web)", isCorrect: false),
       Answer(answer: "C) Çekirdek (Kernel)", isCorrect: false),
       Answer(answer: "D) Doğal (Native)", isCorrect: true),
+      Answer(answer: "E) Cross-Platform (Çok Ortam Destekli)", isCorrect: true),
     ],
   ),
   Question(
@@ -29,6 +30,8 @@ List<Question> questions = [
       Answer(answer: "B) .flutter", isCorrect: false),
       Answer(answer: "C) .dart", isCorrect: true),
       Answer(answer: "D) .bin", isCorrect: false),
+      Answer(answer: "E) .json", isCorrect: false),
+      Answer(answer: "F) .csharp", isCorrect: false),
     ],
   ),
   Question(
