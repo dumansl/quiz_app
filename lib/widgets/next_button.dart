@@ -28,7 +28,7 @@ class NextButton extends StatelessWidget {
       ),
       onPressed: onPressed,
       child: Text(
-        isLastQuestion ? "GÖNDER" : "İLERİ",
+        isLastQuestion ? "SONUCU GÖR" : "İLERİ",
         style: GoogleFonts.roboto(
           fontWeight: FontWeight.w500,
           color: Colors.black,
