@@ -117,21 +117,27 @@ class _QuizScreenState extends State<QuizScreen> {
                     isLastQuestion: isLastQuestion,
                     onPressed: () {
                       if (selectedAnswers[currentQuestionIndex] != null) {
-                        setState(() {
-                          if (selectedAnswers[currentQuestionIndex]!
-                              .isCorrect) {
-                            score += 10;
-                          }
-                          if (!isLastQuestion) {
-                            currentQuestionIndex++;
-                          } else {
-                            Navigator.push(
+                        setState(
+                          () {
+                            if (selectedAnswers[currentQuestionIndex]!
+                                .isCorrect) {
+                              score += 10;
+                            }
+                            if (!isLastQuestion) {
+                              currentQuestionIndex++;
+                            } else {
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const ResultScreen(),
-                                ));
-                          }
-                        });
+                                  builder: (context) => ResultScreen(
+                                    selectedAnswers: selectedAnswers,
+                                    score: score,
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        );
                       }
                     },
                   ),
