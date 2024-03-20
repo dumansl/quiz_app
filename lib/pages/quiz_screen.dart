@@ -149,38 +149,4 @@ class _QuizScreenState extends State<QuizScreen> {
       ),
     );
   }
-
-  // Widget showScoreDialog() {
-  //   return AlertDialog(
-  //     title: const Text(""),
-  //     content: Text(
-  //       'Puanınız $score',
-  //       style: GoogleFonts.roboto(
-  //         fontWeight: FontWeight.w400,
-  //         color: Colors.black,
-  //         fontSize: 18,
-  //       ),
-  //     ),
-  //     actions: [
-  //       TextButton(
-  //         onPressed: () {
-  //           Navigator.pop(context);
-  //           setState(() {
-  //             currentQuestionIndex = 0;
-  //             score = 0;
-  //             selectedAnswers = List<Answer?>.filled(questionList.length, null);
-  //           });
-  //         },
-  //         child: Text(
-  //           'Close',
-  //           style: GoogleFonts.roboto(
-  //             fontWeight: FontWeight.w400,
-  //             color: Colors.black,
-  //             fontSize: 18,
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 }
