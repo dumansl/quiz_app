@@ -44,6 +44,16 @@ class ResultScreen extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
+                      text: selectedAnswers[i]!.isCorrect
+                          ? " - DOĞRU"
+                          : " - YANLIŞ",
+                      style: GoogleFonts.roboto(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                    ),
+                    TextSpan(
                       text: '\n${selectedAnswers[i]}',
                       style: GoogleFonts.roboto(
                         color: Colors.black,
